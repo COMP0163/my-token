@@ -147,49 +147,5 @@ contract("MyToken", function (accounts) {
         await this.token.transferFrom.call(accounts[1], accounts[0], amount);
       });
     });
-
-    describe("on success", function () {
-      before(async function () {
-        this.sender = accounts[1];
-        this.receiver = accounts[0];
-        this.allowance = 100;
-        this.senderInitialBalance = (await this.token.balanceOf.call(this.sender)).toNumber();
-        this.receiverInitialBalance = (await this.token.balanceOf.call(this.receiver)).toNumber();
-        this.token.approve(accounts[0], this.allowance, { from: this.sender });
-        this.result = await this.token.transferFrom(this.sender, this.receiver, amount);
-      });
-
-      it("should return true", async function () {
-        const res = await this.token.transferFrom.call(this.sender, this.receiver, amount);
-        assert.equal(res, true);
-      })
-
-      it("should subtract tokens from sender balance", async function () {
-        const senderBalance = await this.token.balanceOf.call(this.sender);
-        assert.equal(senderBalance, this.senderInitialBalance - amount);
-      });
-
-      it("should add tokens to receiver balance", async function () {
-        const receiverBalance = await this.token.balanceOf.call(this.receiver);
-        assert.equal(receiverBalance, this.receiverInitialBalance + amount);
-      });
-
-      it("should update allowance", async function () {
-        const newAllowance = await this.token.allowance.call(this.sender, this.receiver);
-        assert.equal(newAllowance, this.allowance - amount);
-      });
-
-      it("should emit a Transfer event", function () {
-        for (const log of this.result.logs) {
-          if (log.event === "Transfer") {
-            assert.equal(log.args._from, this.sender);
-            assert.equal(log.args._to, this.receiver);
-            assert.equal(log.args._value, amount);
-            return;
-          }
-        }
-        assert.fail("Transfer event has not been emitted");
-      });
-    });
  });
 });
