@@ -21,6 +21,7 @@ jobs:
         npm install -g truffle
 
     - name: Autograding
+      id: autograding
       uses: classroom-resources/autograding-command-grader@v1
       with:
         test-name: Autograding
